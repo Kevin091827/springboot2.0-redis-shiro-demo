@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<!--
+<body style="margin-left: 70px;margin-right: 70px;margin-top: 30px">
+
+<div class="container">
+    <h2>登录</h2>
+    <form class="form-horizontal" role="form" th:action="@{/manager/login}" th:method="post">
+        <div class="form-group">
+            <label for="username">学号:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="请输入你的用户名">
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" class="form-control" id="password"  name="password" placeholder="请输入你的密码">
+        </div>
+        <button type="submit" class="btn btn-primary" id="btn">登 录</button>
+        <input type="checkbox" name="rememeberMe">记住我
+        <a th:href="@{/manager/toRegister}">注 册</a>
+    </form>
+</div>
+
+    <script>
+        $(document).ready(function(e) {
+            $("#btn").click(function(){//给按钮加点击事件
+                //取用户名和密码
+                var username = $("#username").val();//取输入的用户名
+                var password = $("#password").val();//取输入的密码
+                //调ajax
+                $.ajax({
+                    url:"/manager/login",
+                    data:{username:username,password:password},//第二个u和p只是变量，可以随意写，dengluchuli.php里面的u和p都是第一个。
+                    type:"POST",
+                    dataType:"TEXT",
+                    success: function(data){
+                        if(data.trim()=="OK")//要加上去空格，防止内容里面有空格引起错误。
+                        {
+                            alert("登录成功");
+                            window.location.href="/manager/toSuccessLogin";//js跳转页面，要记住。
+                        }
+                        else
+                        {
+                            alert("用户名或密码错误");
+                            window.location.href="/manager/toLogin";
+                        }
+                    }
+                });
+            })
+        });
+    </script>
+</body>-->
+<body>
+<style>
+    #div1
+    {
+        border:2px solid #a1a1a1;
+        padding:10px 40px;
+        width:400px;
+        margin:150px 480px;
+        border-radius:25px;
+    }
+</style>
+
+<div class="container" id="div1">
+    <h2 class="text-center">登录</h2>
+    <form th:action="@{/manager/login}" th:method="post">
+        <div class="form-group">
+            <label for="username">用户名:</label>
+            <input type="text" class="form-control" id="username" required="true" name="username" placeholder="请输入你的用户名">
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" class="form-control" id="password"  name="password" placeholder="请输入你的密码" required="true">
+        </div>
+        <div align="left" style="float:left">
+            <input type="submit" class="btn btn-info" value="登录" >
+        </div>
+        <div align="right">
+            <a th:href="@{/manager/toRegister}" class="btn btn-info" role="button" >注册</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body style="margin-left: 70px;margin-right: 70px;margin-top: 30px">
+
+<style>
+    #div1
+    {
+        border:2px solid #a1a1a1;
+        padding:10px 40px;
+        width:400px;
+        margin:150px 480px;
+        border-radius:25px;
+    }
+</style>
+
+<div style="width: 50%; margin-top: 30px;margin-left: 360px" id="div1">
+    <center><h2>用户注册</h2> </center>
+    <form class="form-horizontal" role="register" th:action="@{/student/register}" method="post" style="width: 80%; margin: auto;">
+        <div class="form-group">
+            <label for="username">用户名:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="请输入你的用户名" required="true">
+        </div> 
+        <div class="form-group">
+            <label for="sex">性别:</label>
+            <input type="text" class="form-control" id="sex" name="sex" placeholder="请输入你的性别"  required="true">
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="请输入你的密码"  required="true">
+        </div>
+        <div class="form-group">
+            <label for="profession">专业:</label>
+            <input type="text" class="form-control" id="profession" name="profession" placeholder="请输入你的专业"  required="true">
+        </div>
+        <div class="form-group" style="margin-right: 150px">
+                          已有账号？点击<a th:href="@{|/student/toLogin|}">登录！</a>
+            <button type="submit" class="btn btn-success"  style="float: right;margin-right: 60px" id="btn_register">注册</button>
+        </div> 
+    </form>
+</div>
+</body>
+</html>

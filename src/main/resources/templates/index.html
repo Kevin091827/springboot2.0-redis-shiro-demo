@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<style>
+    img {
+        border-radius: 8px;
+    }
+    #div1{
+        text-align:center;
+    }
+</style>
+<body>
+<div id="div1" style="margin-top: 100px">
+    <h2>登 录 类 型</h2>
+</div>
+<div class="container"style="float:left;margin-left: 100px;margin-top: 10px">
+    <a id="a1" th:href="@{|/manager/toLogin|}"><img border="0" src="http://img95.699pic.com/element/40076/1918.png_300.png" /></a>
+    <p style="text-align: center">管理员登录</p>
+</div>
+<div style="float:right;margin-right: 100px;margin-top: 10px" id="div2" >
+    <a id="a2" th:href="@{|/student/toLogin|}" ><img border="0" src="http://img95.699pic.com/element/40037/8224.png_300.png" /></a>
+    <p style="text-align: center">学生登录</p>
+</div>
+</div>
+</body>
+</html>

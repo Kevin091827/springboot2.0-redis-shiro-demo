@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kevin.library.dao.StudentDao">
+
+    <resultMap id="student" type="com.kevin.library.pojo.Student">
+        <result	column="id" property="id"></result>
+        <result column="username" property="username"></result>
+        <result column="sex" property="sex"></result>
+        <result column="profession" property="profession"></result>
+        <result column="password" property="password"></result>
+        <result column="role" property="role"></result>
+    </resultMap>
+
+    <!--学生用户登录-->
+    <select id="login" parameterType="java.lang.String" resultMap="student">
+		select * from student_info where username=#{username}
+	</select>
+
+    <!--学生注册-->
+    <insert id="register" parameterType="com.kevin.library.pojo.Student">
+        insert into student_info (username,sex,profession,password,role) values (#{student.username},#{student.sex},#{student.profession},#{student.password},#{student.role})
+    </insert>
+
+    <!--更新信息-->
+    <update id="updateInfo" parameterType="com.kevin.library.pojo.Student">
+        update student_info
+        <set>
+            <if test="student.username!=null and student.username!=&quot;&quot;" >
+                username = #{student.username},
+            </if>
+            <if test="student.profession!=null and student.profession!=&quot;&quot;">
+                profession = #{student.profession},
+            </if>
+            <if test="student.sex!=null and student.sex!=&quot;&quot;">
+                sex = #{student.sex},
+            </if>
+            <if test="student.password!=null and student.password!=&quot;&quot;">
+                password = #{student.password}
+            </if>
+        </set>
+          where id = #{student.id}
+    </update>
+</mapper>

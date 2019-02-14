@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body style="margin-left: 70px;margin-right: 70px;margin-top: 30px">
+<style>
+
+    * {
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    html {
+        color: #888;
+        display: table;
+        font-family: sans-serif;
+        height: 100%;
+        text-align: center;
+        width: 100%;
+    }
+
+    body {
+        display: table-cell;
+        vertical-align: middle;
+        margin: 2em auto;
+    }
+
+    h1 {
+        color: #555;
+        font-size: 2em;
+        font-weight: 400;
+    }
+
+    p {
+        margin: 0 auto;
+        width: 280px;
+    }
+
+    @media only screen and (max-width: 280px) {
+
+        body, p {
+            width: 95%;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            margin: 0 0 0.3em;
+        }
+
+    }
+    #div1
+    {
+        border:2px solid #a1a1a1;
+        padding:50px 40px;
+        width:500px;
+        margin:100px 480px;
+        border-radius:25px;
+    }
+    #div2
+    {
+        border:2px solid #a1a1a1;
+        padding:50px 40px;
+        width:500px;
+        margin:100px 480px;
+        border-radius:25px;
+    }
+    /*添加背景色和滚动条*/
+    .navMenuBox {
+        background-color: #1c2229;
+        overflow:auto;
+    }
+    .navMenuBox{
+        width: 160px;
+        height: 700px;
+    }
+
+    /*去掉默认样式*/
+    .navMenuBox ul,
+    .navMenuBox li {
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .navMenu>li>a {
+        display: block;
+        line-height: 40px;
+        font-size: 17px;
+        text-decoration: none;
+        color: #ABB1B7;
+        border-top: 1px solid #222932;
+        border-bottom: 2px solid #191e24;
+    }
+
+    .navMenu>li.active>a,
+    .navMenu>li>a:hover,
+    .subMenu>li.active>a,
+    .subMenu>li>a:hover {
+        color: #FFF;
+        background: #12181b;
+    }
+
+    .subMenu>li>a {
+        display: block;
+        line-height: 36px;
+        font-size: 16px;
+        text-decoration: none;
+        color: #ABB1B7;
+    }
+
+    ul.subMenu {
+        margin-top: 8px;
+        margin-left: 10px;
+        padding-bottom: 5px;
+    }
+
+    .subMenu>li> a {
+        padding-left: 20px;
+    }
+
+    a.arrow:after {
+        display: block;
+        float: right;
+        margin-right: 15px;
+        font-size: 16px;
+        line-height: 40px;
+        font-family: FontAwesome;
+        content: "\f105";
+        font-weight: 300;
+        text-shadow: none;
+    }
+
+    li.active>a.arrow:after {
+        display: block;
+        float: right;
+        margin-right: 15px;
+        font-size: 16px;
+        line-height: 40px;
+        font-family: FontAwesome;
+        content: "\f107";
+        font-weight: 300;
+        text-shadow: none;
+    }
+
+    .navMenu>li>a:before{
+        display: block;
+        float: left;
+        margin: 0 5px;
+        font-size: 20px;
+        line-height: 40px;
+        font-family: FontAwesome;
+        content: "\f0ac";
+        font-weight: 300;
+        text-shadow: none;
+    }
+</style>
+<script>
+    $(function(){
+        //初始化
+        $('.subMenu').hide();
+        $('li.active>.subMenu').show();
+
+        //给菜单项添加事件
+        $('.navMenu a').click(function(){
+            //获取所属列表ul
+            var $subMenuElement=$(this).next();
+            var $liElement=$(this).parent();
+            var $ulElement=$(this).parent().parent();
+            //没有子菜单，则直接返回
+            if(!$subMenuElement.is('ul'))
+            {
+                $ulElement.find('li').removeClass('active');
+                $ulElement.find('ul.subMenu').slideUp();
+                $liElement.addClass('active');
+                return;
+            }
+            //如果存在子菜单，则打开或者关闭
+            if(! $liElement.hasClass('active')){
+                $ulElement.find('li').removeClass('active');
+                $ulElement.find('ul.subMenu').slideUp();
+                $liElement.addClass('active');
+                $subMenuElement.slideDown();
+            }else{
+                //打开状态 则关闭本菜单
+                $subMenuElement.slideUp();
+                $liElement.removeClass('active');
+
+            }
+        });
+    });
+</script>
+</head>
+<!--学生页面-->
+<div shiro:hasRole="stu" id="div1" style="margin-top: 30px; position:absolute;left: 50px; position:absolute;top: 10px;">
+    <center ><h2>个人信息</h2> </center>
+    <form class="form-horizontal" role="form" style="width: 80%; margin: auto;">
+        <div class="form-group form-inline" style="margin-top:20px">
+            <label for="stu_username" style="width:50px">姓名：</label>
+            <input type="text" class="form-control" id="stu_username" name="stu_username" readonly="true" th:value="${studentInfo.username}"style="width:250px">
+        </div> 
+        <div class="form-group form-inline" style="margin-top:-5px">
+            <label for="stu_id" style="width:50px">id：</label>
+            <input type="text" class="form-control" id="stu_id" name="stu_id" readonly="true" th:value="${studentInfo.id}" style="width:250px">
+        </div>
+        <div class="form-group form-inline" style="margin-top:20px">
+            <label for="stu_sex">性别：</label>
+            <input type="text" class="form-control" id="stu_sex" name="stu_sex" th:value="${studentInfo.sex}"  required="true" style="width:250px">
+        </div>
+        <div class="form-group form-inline" style="margin-top:20px">
+            <label for="stu_profession">专业：</label>
+            <input type="text" class="form-control" id="stu_profession" name="stu_profession" th:value="${studentInfo.profession}"required="true" style="width:250px">
+        </div>
+        <div class="form-group form-inline" style="margin-top:20px">
+            <label for="stu_role">角色：</label>
+            <input type="text" class="form-control" id="stu_role" name="stu_role" readonly="true" th:value="${studentInfo.role}"style="width:250px">
+        </div>
+        <div class="form-group" style="margin-right: 150px">
+            <a th:href="@{/student/toUpdate}" class="btn btn-info" role="button"  style="width:320px ;margin-top:5px">修改密码</a>
+            <a th:href="@{/student/toUpdate}" class="btn btn-info" role="button"  style="width:320px ;margin-top:5px">修改密码</a>
+        </div> 
+    </form>
+</div>
+<!--管理员页面-->
+<div shiro:hasRole="man" id="div2" style="margin-top: 30px; position:absolute;left: 50px; position:absolute;top: 10px;">
+    <center ><h2>个人信息</h2> </center>
+    <form class="form-horizontal" role="register" style="width: 80%; margin: auto;">
+        <div class="form-group form-inline" style="margin-top:20px">
+            <label for="man_username" style="width:50px">姓名：</label>
+            <input type="text" class="form-control" id="man_username" name="man_username" readonly="true" th:value="${manInfo.managerName}" required="true" style="width:250px">
+        </div> 
+        <div class="form-group form-inline" style="margin-top:-5px">
+            <label for="man_id" style="width:50px">id：</label>
+            <input type="text" class="form-control" id="man_id" name="man_id" readonly="true" required="true" th:value="${manInfo.id}" style="width:250px">
+        </div>
+        <div class="form-group form-inline" style="margin-top:20px">
+            <label for="man_role">角色：</label>
+            <input type="text" class="form-control" id="man_role" name="man_role" readonly="true" required="true" th:value="${manInfo.role}" style="width:250px">
+        </div>
+        <div class="form-group" style="margin-right: 150px">
+            <a th:href="@{/manager/toUpdate}" class="btn btn-info" role="button"  style="width:320px ;margin-top:5px">修改密码</a>
+        </div> 
+    </form>
+</div>
+<div class="navMenuBox">
+    <ul class="navMenu">
+        <li >
+            <a shiro:hasRole="man" th:href="@{/manager/allStudentInfo}" class="arrow">主页</a>
+        </li>
+        <li>
+            <a shiro:hasRole="man" th:href="@{/manager/toSelectStuInfo}" class="arrow">查找学生</a>
+        </li>
+        <li>
+            <a shiro:hasRole="man" th:href="@{/manager/toSelectManInfo}" class="arrow">个人信息</a>
+        </li>
+        <li>
+            <a shiro:hasRole="stu" th:href="@{/student/personalInfomation}" class="arrow">个人信息</a>
+        </li>
+        <li>
+            <a shiro:hasRole="man" th:href="@{/manager/toInsertStudent}" class="arrow">添加学生</a>
+        </li>
+        <li>
+            <a shiro:hasRole="man" th:href="@{/manager/toUpdate}" class="arrow">修改密码</a>
+        </li>
+        <li>
+            <a shiro:hasRole="stu" th:href="@{/student/toUpdate}" class="arrow">修改密码</a>
+        </li>
+        <li>
+            <a shiro:hasRole="man" th:href="@{|/manager/logout|}" class="arrow">退出登录</a>
+        </li>
+        <li>
+            <a shiro:hasRole="stu" th:href="@{|/student/logout|}" class="arrow">退出登录</a>
+        </li>
+    </ul>
+</div>-->
+</body>
+</html>

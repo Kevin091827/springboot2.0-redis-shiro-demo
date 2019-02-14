@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<style>
+    #div1
+    {
+        border:2px solid #a1a1a1;
+        padding:10px 40px;
+        width:400px;
+        margin:150px 480px;
+        border-radius:25px;
+    }
+</style>
+
+<div class="container" id="div1">
+    <h2 class="text-center">登录</h2>
+    <form th:action="@{/student/login}" th:method="post">
+        <div class="form-group">
+            <label for="username">用户名:</label>
+            <input type="text" class="form-control" id="username" required="true" name="username" placeholder="请输入你的用户名">
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" class="form-control" id="password"  name="password" placeholder="请输入你的密码" required="true">
+        </div>
+        <div align="left" style="float:left">
+            <input type="submit" class="btn btn-info" value="登录" >
+        </div>
+        <div align="right">
+            <a th:href="@{/student/toRegister}" class="btn btn-info" role="button" >注册</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

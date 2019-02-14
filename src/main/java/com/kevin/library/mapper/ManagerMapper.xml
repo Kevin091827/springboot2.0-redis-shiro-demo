@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kevin.library.dao.ManagerDao">
+
+    <resultMap id="manager" type="com.kevin.library.pojo.Manager">
+        <result	column="id" property="id"></result>
+        <result column="managerName" property="managerName"></result>
+        <result column="password" property="password"></result>
+        <result column="role" property="role"></result>
+    </resultMap>
+
+    <resultMap id="student" type="com.kevin.library.pojo.Student">
+        <result	column="id" property="id"></result>
+        <result column="username" property="username"></result>
+        <result column="sex" property="sex"></result>
+        <result column="profession" property="profession"></result>
+        <result column="password" property="password"></result>
+        <result column="role" property="role"></result>
+    </resultMap>
+
+    <!--登录-->
+    <select id="login" parameterType="java.lang.String" resultMap="manager">
+		select * from manager_info where managerName=#{managerName}
+	</select>
+    <!--注册-->
+    <insert id="register" parameterType="com.kevin.library.pojo.Manager">
+        insert into manager_info (managerName,password,role) values (#{manager.managerName},#{manager.password},#{manager.role})
+    </insert>
+    <!--全体学生信息-->
+    <select id="allStudentInfo" parameterType="java.util.Map" resultMap="student">
+		SELECT
+		* FROM  student_info
+		limit #{startRow},#{endRow}
+	</select>
+    <!--查询总数-->
+    <select id="studentTotal" resultType="java.lang.Integer">
+		select count(*) from student_info
+	</select>
+    <!--根据id查找学生-->
+    <select id="selectStuById" parameterType="java.lang.Integer" resultMap="student">
+        select * from student_info where id = #{id}
+    </select>
+    <!--更新学生信息-->
+    <update id="updateStuInfo" parameterType="com.kevin.library.pojo.Student">
+        update student_info
+        <set>
+            <if test="student.username!=null and student.username!=&quot;&quot;">
+                username = #{student.username},
+            </if>
+            <if test="student.profession!=null and student.profession != &quot;&quot;">
+                profession = #{student.profession},
+            </if>
+            <if test="student.sex!=null and student.sex != &quot;&quot;">
+                sex= #{student.sex},
+            </if>
+            <if test="student.role!=null and student.role != &quot;&quot;">
+                role= #{student.role},
+            </if>
+       </set>
+        where id=#{student.id}
+    </update>
+
+    <!--根据id删除学生信息-->
+    <delete id="deleteStuInfo" parameterType="java.lang.Integer">
+        delete from student_info where id = #{id}
+    </delete>
+
+    <!--添加学生信息,涉及密码,需权限-->
+    <insert id="insertStudent" parameterType="com.kevin.library.pojo.Student">
+        insert into student_info (id,username,sex,profession,password,role) values (#{student.id},#{student.username},#{student.sex},#{student.profession},#{student.password},#{student.role});
+    </insert>
+
+    <!--获取添加权限-->
+    <update id="updateRole">
+        update manager_info set role = #{role} where id = #{id}
+    </update>
+
+    <!--根据id查找管理员-->
+    <select id="selectManById" parameterType="java.lang.Integer" resultMap="manager">
+        select * from manager_info where id = #{id}
+    </select>
+
+    <!--查询学生信息-->
+    <select id="selectStuInfo" parameterType="com.kevin.library.pojo.Student" resultMap="student">
+        select * from student_info
+        <where>
+            <if test="student.username!=null and student.username!=&quot;&quot;">
+                username = #{student.username}
+            </if>
+            <if test="student.id!=null and student.id != &quot;&quot;">
+                and id = #{student.id}
+            </if>
+            <if test="student.profession!=null and student.profession != &quot;&quot;">
+                and profession = #{student.profession}
+            </if>
+        </where>
+    </select>
+
+    <!--更新信息-->
+    <update id="updateManPerInfo" parameterType="com.kevin.library.pojo.Manager">
+        update manager_info
+        <set>
+            role = #{manager.role},
+            <if test="manager.managerName!=null and manager.managerName!=&quot;&quot;">
+                 managerName = #{manager.managerName},
+            </if>
+            <if test="manager.password!=null and manager.password!=&quot;&quot;">
+                 password = #{manager.password}
+            </if>
+        </set>
+        where id = #{manager.id}
+    </update>
+</mapper>
