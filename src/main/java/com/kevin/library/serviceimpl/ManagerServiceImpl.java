@@ -79,8 +79,12 @@ public class ManagerServiceImpl implements ManagerService {
             if(reenLock.tryLock()){
                 try{
                     student = managerDao.selectStuById(id);
-                    redisTemplate.opsForValue().set("student:"+student.getId(),student);
-                    return student;
+                    if(student == null){
+                        return null;
+                    }else {
+                        redisTemplate.opsForValue().set("student:" + student.getId(), student);
+                        return student;
+                    }
                 }finally {
                     reenLock.unlock();
                 }
@@ -167,8 +171,12 @@ public class ManagerServiceImpl implements ManagerService {
             if(reenLock.tryLock()){
                 try{
                     manager = managerDao.selectManById(id);
-                    redisTemplate.opsForValue().set("manager:"+id,manager);
-                    return manager;
+                    if(manager == null){
+                        return null;
+                    }else {
+                        redisTemplate.opsForValue().set("manager:" + id, manager);
+                        return manager;
+                    }
                 }finally {
                   reenLock.unlock();
                 }

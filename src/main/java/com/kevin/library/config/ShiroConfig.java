@@ -6,41 +6,28 @@ import com.kevin.library.realm.ManLoginRealm;
 import com.kevin.library.utils.CredentialsMatcher;
 import com.kevin.library.utils.NewAuthenticator;
 import com.kevin.library.utils.ShiroRedisCacheManager;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
-import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.codec.Base64;
-import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.session.mgt.SessionManager;
-import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 public class ShiroConfig {
@@ -245,6 +232,23 @@ public class ShiroConfig {
     }
 
     /**
+     * 异常处理
+     * @return
+     */
+    @Bean(name="simpleMappingExceptionResolver")
+    public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver simpleMappingExceptionResolver = new SimpleMappingExceptionResolver();
+        Properties mappings = new Properties();
+        //数据库异常处理
+        mappings.setProperty("DatabaseException", "500");
+        //设置未授权页面
+        mappings.setProperty("UnauthorizedException","unanthorized");
+        simpleMappingExceptionResolver.setExceptionMappings(mappings);
+        return simpleMappingExceptionResolver;
+    }
+
+
+    /**
      * 创建shiroFilter关联securityManager
      */
     @Bean
@@ -274,8 +278,6 @@ public class ShiroConfig {
         filterMap.put("/manager/**","authc");
         //设置登录url
         shiroFilterFactoryBean.setLoginUrl("/toIndex");
-        //设置未授权url
-        shiroFilterFactoryBean.setUnauthorizedUrl("/student/toUnanthorized");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         System.out.print("shiro拦截器已经加载");
         return shiroFilterFactoryBean;

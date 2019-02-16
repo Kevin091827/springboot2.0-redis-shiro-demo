@@ -8,6 +8,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,7 @@ public class StudentController {
     /**
      * 退出登录
      */
+    @RequiresRoles("stu")
     @RequestMapping("/student/logout")
     public String logout(){
         Subject subject = SecurityUtils.getSubject();
@@ -115,6 +117,7 @@ public class StudentController {
      * @param model
      * @return
      */
+    @RequiresRoles("stu")
     @RequestMapping("/student/personalInfomation")
     public String personalInfomation(Model model){
         Subject subject = SecurityUtils.getSubject();
@@ -129,6 +132,7 @@ public class StudentController {
      * @param model
      * @return
      */
+    @RequiresRoles("stu")
     @RequestMapping("/student/toUpdate")
     public String toUpdate(Model model){
         Subject subject = SecurityUtils.getSubject();
@@ -146,6 +150,7 @@ public class StudentController {
      * @param model
      * @return
      */
+    @RequiresRoles("stu")
     @RequestMapping("/student/updateStuPwd")
     public String updateStuPwd(@RequestParam(value = "username") String username,@RequestParam("sex") String sex,
                                @RequestParam(value = "profession",required = false) String profession,

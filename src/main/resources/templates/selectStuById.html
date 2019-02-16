@@ -191,6 +191,7 @@
 </head>
 <!--管理员页面-->
 <div shiro:hasRole="man" id="div1" style="margin-top: 30px; position:absolute;left: 50px; position:absolute;top: 10px;">
+    <span th:if="${selectStu} != null">
     <center ><h2>信息一览</h2> </center>
     <form class="form-horizontal" role="register" th:action="@{/manager/updateStuInfo}" th:method="post" style="width: 80%; margin: auto;">
         <div class="form-group form-inline" style="margin-top:20px">
@@ -218,6 +219,12 @@
             <button type="submit" class="btn btn-primary" style="width:320px ;margin-top:60px">更新信息</button>
         </div> 
     </form>
+    </span>
+    <span th:if="${selectStu} == null">
+        <script>
+            alert("没有找到该学生");
+        </script>
+    </span>
 </div>
 <!--包裹层-->
 <div class="navMenuBox">

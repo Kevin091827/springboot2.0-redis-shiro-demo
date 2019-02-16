@@ -13,6 +13,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +85,7 @@ public class ManagerController {
      * 退出登录
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/logout")
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
@@ -93,7 +96,6 @@ public class ManagerController {
     /**
      * 跳转到注册页面
      */
-
     @RequestMapping("/manager/toRegister")
     public String toRegister() {
         return "man_register";
@@ -120,6 +122,7 @@ public class ManagerController {
     /**
      * 分页查询全体学生信息
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/allStudentInfo")
     public String allStudentInfo(@RequestParam(value = "selectPage", required = false) Integer selectPage, Model model) {
         //默认从第一页开始找
@@ -140,11 +143,14 @@ public class ManagerController {
      * @param model
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/selectStuById")
     public String selectStuById(@RequestParam("id") int id, Model model) {
 
         Student student = managerService.selectStuById(id);
-        model.addAttribute("selectStu", student);
+        if(student != null) {
+            model.addAttribute("selectStu", student);
+        }
         return "selectStuById";
     }
 
@@ -153,6 +159,7 @@ public class ManagerController {
      * @param student
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/updateStuInfo")
     public String updateStuInfo(Student student) {
         managerService.updateStuInfo(student);
@@ -164,6 +171,7 @@ public class ManagerController {
      * @param id
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/deleteStuInfo")
     public String deleteStuInfo(@RequestParam("id") int id) {
         managerService.deleteStuInfo(id);
@@ -173,6 +181,7 @@ public class ManagerController {
     /**
      * 跳转到添加学生页面
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/toInsertStudent")
     public String toInsertStudent() {
         return "insertStudent";
@@ -187,6 +196,7 @@ public class ManagerController {
      * @param id
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/insertStudent")
     public String insertStudent(@RequestParam("username") String username, @RequestParam("password") String password,
                                 @RequestParam("sex") String sex, @RequestParam("profession") String profession, @RequestParam(value = "id", required = false) Integer id) {
@@ -206,6 +216,7 @@ public class ManagerController {
     /**
      * 跳转到搜索页面
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/toSelectStuInfo")
     public String toSelectStuInfo() {
         return "toSelectStuInfo";
@@ -214,6 +225,7 @@ public class ManagerController {
     /**
      *多条件搜索
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/selectStudentInfo")
     public String selectStudentInfo(@RequestParam(value = "username", required = false) String username, @RequestParam(value = "id", required = false) Integer id,
                                     @RequestParam(value = "profession", required = false) String profession, Model model) {
@@ -237,6 +249,7 @@ public class ManagerController {
      * @param model
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/toSelectManInfo")
     public String manPersonalInfo(Model model) {
         Subject subject = SecurityUtils.getSubject();
@@ -251,6 +264,7 @@ public class ManagerController {
      * @param model
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/toUpdate")
     public String toUpdateManInfo(Model model) {
         model.addAttribute("manager", managerService.selectManById((int) SecurityUtils.getSubject().getPrincipal()));
@@ -265,6 +279,7 @@ public class ManagerController {
      * @param model
      * @return
      */
+    @RequiresRoles("man")
     @RequestMapping("/manager/updateManPwd")
     public String updatePwd(@RequestParam(value = "password1") String pwd1, @RequestParam(value = "password2") String pwd2, @RequestParam("managerName") String managerName, Model model) {
         Subject subject = SecurityUtils.getSubject();
