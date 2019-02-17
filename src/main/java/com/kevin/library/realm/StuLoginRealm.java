@@ -23,7 +23,6 @@ import java.io.Serializable;
 
 public class StuLoginRealm extends AuthorizingRealm {
 
-    @Lazy
     @Resource
     private StudentService studentService;
 
