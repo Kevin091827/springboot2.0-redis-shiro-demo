@@ -10,6 +10,7 @@ import com.kevin.library.service.ManagerService;
 import com.kevin.library.utils.CredentialsMatcher;
 import com.kevin.library.utils.NewToken;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -73,7 +74,7 @@ public class ManagerController {
                     subject.login(token);
                     subject.getSession().setAttribute("msg",token.getUsername());
                     return "redirect:/manager/toSuccessLogin";
-                } catch (Exception e) {
+                } catch (AuthenticationException e) {
                     logger.info("失败原因：" + e.getMessage());
                     return "login2";
                 }

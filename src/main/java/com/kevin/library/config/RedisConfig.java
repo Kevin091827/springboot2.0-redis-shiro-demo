@@ -71,6 +71,10 @@ public class RedisConfig extends CachingConfigurerSupport{
     @Value("${spring.redis.timeout}")
     private int timeout;
 
+    /**
+     * 连接池配置
+     * @return
+     */
     @Bean
     public JedisPoolConfig getJedisPoolConfig(){
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -93,6 +97,10 @@ public class RedisConfig extends CachingConfigurerSupport{
         return jedisPoolConfig;
     }
 
+    /**
+     * 连接工厂
+     * @return
+     */
     @Bean
     public JedisConnectionFactory getJedisConnectionFactory(){
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
@@ -110,6 +118,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
         return jedisConnectionFactory;
     }
+
     /**
      * 自定义key生成器
      * @return
@@ -149,11 +158,14 @@ public class RedisConfig extends CachingConfigurerSupport{
         // 配置redisTemplate
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(getJedisConnectionFactory());
+        //开启事务支持
+        redisTemplate.setEnableTransactionSupport(true);
+        //序列化策略
         RedisSerializer stringSerializer = new StringRedisSerializer();
-        redisTemplate.setKeySerializer(stringSerializer); // key序列化
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer); // value序列化
-        redisTemplate.setHashKeySerializer(stringSerializer); // Hash key序列化
-        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer); // Hash value序列化
+        redisTemplate.setKeySerializer(stringSerializer);
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashKeySerializer(stringSerializer);
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
@@ -195,7 +207,7 @@ public class RedisConfig extends CachingConfigurerSupport{
      */
     @Bean
     @Override
-    public CacheManager cacheManager() {
+    public RedisCacheManager cacheManager() {
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(60))
@@ -205,6 +217,7 @@ public class RedisConfig extends CachingConfigurerSupport{
                 .cacheDefaults(config)
                 .build();
         return cacheManager;
+
     }
 
 }

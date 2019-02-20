@@ -5,6 +5,7 @@ import com.kevin.library.service.StudentService;
 import com.kevin.library.utils.CredentialsMatcher;
 import com.kevin.library.utils.NewToken;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -60,8 +61,7 @@ public class StudentController {
                 subject.login(token);
                 subject.getSession().setAttribute("msg",token.getUsername());
                 return "redirect:/student/toSuccessLogin";
-            } catch(Exception e){
-                logger.info("用户名或密码不正确");
+            } catch(AuthenticationException e){
                 logger.info("失败原因："+e.getMessage());
                 return "login";
             }

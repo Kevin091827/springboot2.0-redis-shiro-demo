@@ -5,8 +5,7 @@ import com.kevin.library.realm.StuLoginRealm;
 import com.kevin.library.realm.ManLoginRealm;
 import com.kevin.library.utils.CredentialsMatcher;
 import com.kevin.library.utils.NewAuthenticator;
-import com.kevin.library.utils.ShiroRedisCacheManager;
-import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.realm.Realm;
@@ -17,6 +16,7 @@ import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,7 @@ public class ShiroConfig {
     public ModularRealmAuthenticator modularRealmAuthenticator(){
         NewAuthenticator newAuthenticator = new NewAuthenticator();
         //认证策略
-        newAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        newAuthenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
         return newAuthenticator;
     }
 
@@ -85,7 +85,7 @@ public class ShiroConfig {
         stuLoginRealm.setCredentialsMatcher(credentialsMatcher);
         //开启认证和授权的缓存
         stuLoginRealm.setCachingEnabled(true);
-        //stuLoginRealm.setAuthenticationCachingEnabled(true);
+        stuLoginRealm.setAuthenticationCachingEnabled(true);
         stuLoginRealm.setAuthorizationCachingEnabled(true);
         System.out.print("realm已经加载");
         return stuLoginRealm;
@@ -98,7 +98,7 @@ public class ShiroConfig {
         manLoginRealm.setCredentialsMatcher(credentialsMatcher);
         //开启认证和授权的缓存
         manLoginRealm.setCachingEnabled(true);
-        //manLoginRealm.setAuthenticationCachingEnabled(true);
+        manLoginRealm.setAuthenticationCachingEnabled(true);
         manLoginRealm.setAuthorizationCachingEnabled(true);
         System.out.print("Manrealm已经加载");
         return manLoginRealm;
@@ -110,6 +110,7 @@ public class ShiroConfig {
      */
     @Bean
     public SimpleCookie rememberMeCookie(){
+        //对应前端 checkbox name
         SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
         simpleCookie.setMaxAge(259200);
         return simpleCookie;
@@ -130,7 +131,7 @@ public class ShiroConfig {
     }
 
     /**
-     * redis缓存管理器
+     * redis管理器
      * @return
      */
     @Bean
@@ -143,6 +144,18 @@ public class ShiroConfig {
         redisManager.setExpire(1000*100);
         return redisManager;
     }
+
+    /**
+     * redis缓存管理器
+     * @return
+     */
+    @Bean
+    public RedisCacheManager redisCacheManager(){
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        return redisCacheManager;
+    }
+
 
     /**
      * 使用uuid作为sessionID
@@ -187,6 +200,7 @@ public class ShiroConfig {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         // 设置session超时
         sessionManager.setGlobalSessionTimeout(1000*100);
+        //定期验证session
         sessionManager.setSessionValidationSchedulerEnabled(true);
         // 删除无效session
         sessionManager.setDeleteInvalidSessions(true);
@@ -198,6 +212,7 @@ public class ShiroConfig {
         return sessionManager;
     }
 
+
     /**
      * 创建securityManager 关联realm
      */
@@ -205,7 +220,7 @@ public class ShiroConfig {
     public DefaultWebSecurityManager getSecurityManager(@Qualifier("CredentialsMatcher") CredentialsMatcher credentialsMatcher){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //缓存管理器
-        securityManager.setCacheManager(new ShiroRedisCacheManager());
+        securityManager.setCacheManager(redisCacheManager());
         //配置自定义的modularRealmAuthenticator
         securityManager.setAuthenticator(modularRealmAuthenticator());
         //配置realms
@@ -251,7 +266,7 @@ public class ShiroConfig {
     /**
      * 创建shiroFilter关联securityManager
      */
-    @Bean
+    @Bean(name = "shiroFilter")
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager securityManager){
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
@@ -282,4 +297,5 @@ public class ShiroConfig {
         System.out.print("shiro拦截器已经加载");
         return shiroFilterFactoryBean;
     }
+
 }

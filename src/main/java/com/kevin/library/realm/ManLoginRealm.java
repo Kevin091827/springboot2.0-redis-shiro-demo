@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 public class ManLoginRealm extends AuthorizingRealm {
 
-    @Lazy
     @Resource
     private ManagerService managerService;
 
