@@ -1,17 +1,16 @@
-package com.kevin.library.utils;
+package com.kevin.library.util;
 
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.CodecSupport;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.util.ByteSource;
-import org.apache.shiro.util.SimpleByteSource;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class NewSimpleByteSource implements ByteSource,Serializable {
+public class NewSimpleByteSourceUtils implements ByteSource,Serializable {
 
     private static final long serialVersionUID = 5175082362119580768L;
 
@@ -19,31 +18,31 @@ public class NewSimpleByteSource implements ByteSource,Serializable {
     private String cachedHex;
     private String cachedBase64;
 
-    public NewSimpleByteSource(){
+    public NewSimpleByteSourceUtils(){
     }
 
-    public NewSimpleByteSource(byte[] bytes) {
+    public NewSimpleByteSourceUtils(byte[] bytes) {
         this.bytes = bytes;
     }
 
-    public NewSimpleByteSource(char[] chars) {
+    public NewSimpleByteSourceUtils(char[] chars) {
         this.bytes = CodecSupport.toBytes(chars);
     }
 
-    public NewSimpleByteSource(String string) {
+    public NewSimpleByteSourceUtils(String string) {
         this.bytes = CodecSupport.toBytes(string);
     }
 
-    public NewSimpleByteSource(ByteSource source) {
+    public NewSimpleByteSourceUtils(ByteSource source) {
         this.bytes = source.getBytes();
     }
 
-    public NewSimpleByteSource(File file) {
-        this.bytes = (new NewSimpleByteSource.BytesHelper()).getBytes(file);
+    public NewSimpleByteSourceUtils(File file) {
+        this.bytes = (new NewSimpleByteSourceUtils.BytesHelper()).getBytes(file);
     }
 
-    public NewSimpleByteSource(InputStream stream) {
-        this.bytes = (new NewSimpleByteSource.BytesHelper()).getBytes(stream);
+    public NewSimpleByteSourceUtils(InputStream stream) {
+        this.bytes = (new NewSimpleByteSourceUtils.BytesHelper()).getBytes(stream);
     }
 
     public static boolean isCompatible(Object o) {

@@ -33,7 +33,7 @@ public interface ManagerDao {
      * @param id
      * @return
      */
-    Student selectStuById(int id);
+    Student getStuById(int id);
 
     /**
      * 更新学生信息

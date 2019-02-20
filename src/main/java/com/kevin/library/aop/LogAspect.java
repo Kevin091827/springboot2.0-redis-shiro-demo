@@ -22,12 +22,12 @@ public class LogAspect {
 
     //切入点
     @Pointcut("execution(public * com.kevin.library.controller.*.*(..))")
-    public void webLog(){
+    public void webLog() {
     }
 
     //前置通知
     @Before("webLog()")
-    public void before(JoinPoint joinPoint)throws Throwable{
+    public void before(JoinPoint joinPoint)throws Throwable {
         // 接收到请求，记录请求内容
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
@@ -48,13 +48,13 @@ public class LogAspect {
 
     //后置异常通知
     @AfterThrowing("webLog()")
-    public void returnThrowing(JoinPoint joinPoint){
+    public void returnThrowing(JoinPoint joinPoint) {
         System.out.println("方法异常时执行");
     }
 
     //最终通知
     @After("webLog()")
-    public void after(JoinPoint joinPoint){
+    public void after(JoinPoint joinPoint) {
         System.out.println("方法最终执行");
     }
 

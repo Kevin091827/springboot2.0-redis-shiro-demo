@@ -1,7 +1,4 @@
-package com.kevin.library.utils;
-
-import org.apache.shiro.util.ByteSource;
-import org.apache.shiro.util.SimpleByteSource;
+package com.kevin.library.util;
 
 import java.io.*;
 

@@ -1,36 +1,24 @@
 package com.kevin.library.controller;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.kevin.library.dao.ManagerDao;
 import com.kevin.library.pojo.Manager;
 import com.kevin.library.pojo.Student;
 import com.kevin.library.service.ManagerService;
-import com.kevin.library.utils.CredentialsMatcher;
-import com.kevin.library.utils.NewToken;
+import com.kevin.library.util.CredentialsMatcherUtils;
+import com.kevin.library.util.NewTokenUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.awt.event.MouseListener;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class ManagerController {
@@ -68,7 +56,7 @@ public class ManagerController {
 
         Subject subject = SecurityUtils.getSubject();
             if (!subject.isAuthenticated()) {
-                NewToken token = new NewToken(username, password, "Man");
+                NewTokenUtils token = new NewTokenUtils(username, password, "Man");
                 try {
                     token.setRememberMe(true);
                     subject.login(token);
@@ -110,8 +98,8 @@ public class ManagerController {
      */
     @RequestMapping("/manager/register")
     public String register(@RequestParam("managerName") String managerName, @RequestParam("password") String password) {
-        CredentialsMatcher credentialsMatcher = new CredentialsMatcher();
-        String md5_pwd = credentialsMatcher.md5(password, managerName);
+        CredentialsMatcherUtils credentialsMatcherUtils = new CredentialsMatcherUtils();
+        String md5_pwd = credentialsMatcherUtils.md5(password, managerName);
         Manager manager = new Manager();
         manager.setManagerName(managerName);
         manager.setPassword(md5_pwd);
@@ -201,8 +189,8 @@ public class ManagerController {
     @RequestMapping("/manager/insertStudent")
     public String insertStudent(@RequestParam("username") String username, @RequestParam("password") String password,
                                 @RequestParam("sex") String sex, @RequestParam("profession") String profession, @RequestParam(value = "id", required = false) Integer id) {
-        CredentialsMatcher credentialsMatcher = new CredentialsMatcher();
-        String md5_pwd = credentialsMatcher.md5(password, username);
+        CredentialsMatcherUtils credentialsMatcherUtils = new CredentialsMatcherUtils();
+        String md5_pwd = credentialsMatcherUtils.md5(password, username);
         Student student = new Student();
         student.setUsername(username);
         student.setProfession(profession);
@@ -284,14 +272,14 @@ public class ManagerController {
     @RequestMapping("/manager/updateManPwd")
     public String updatePwd(@RequestParam(value = "password1") String pwd1, @RequestParam(value = "password2") String pwd2, @RequestParam("managerName") String managerName, Model model) {
         Subject subject = SecurityUtils.getSubject();
-        CredentialsMatcher credentialsMatcher = new CredentialsMatcher();
+        CredentialsMatcherUtils credentialsMatcherUtils = new CredentialsMatcherUtils();
         int id = (int) subject.getPrincipal();
         Manager manager = new Manager();
         manager.setManagerName(managerName);
         manager.setId(id);
         if (pwd1 != "" && pwd2 != "") {
             if (pwd2.equals(pwd1)) {
-                String pwd = credentialsMatcher.md5("pwd1", managerName);
+                String pwd = credentialsMatcherUtils.md5("pwd1", managerName);
                 manager.setPassword(pwd);
                 managerService.updateManPerInfo(manager);
                 return "redirect:/manager/toSelectManInfo";

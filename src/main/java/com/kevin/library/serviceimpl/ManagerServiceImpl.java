@@ -10,13 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -78,7 +75,7 @@ public class ManagerServiceImpl implements ManagerService {
         if (student == null) {
             if(reenLock.tryLock()){
                 try{
-                    student = managerDao.selectStuById(id);
+                    student = managerDao.getStuById(id);
                     if(student == null){
                         return null;
                     }else {
@@ -204,7 +201,7 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public List<Student> selectStuInfo(Student student) {
-       return managerDao.selectStuInfo(student);
+        return managerDao.selectStuInfo(student);
     }
 
     /**

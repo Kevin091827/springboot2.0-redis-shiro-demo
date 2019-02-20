@@ -76,7 +76,7 @@ public class RedisConfig extends CachingConfigurerSupport{
      * @return
      */
     @Bean
-    public JedisPoolConfig getJedisPoolConfig(){
+    public JedisPoolConfig getJedisPoolConfig() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(maxTotal);
         jedisPoolConfig.setMaxIdle(maxIdle);
@@ -88,7 +88,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         jedisPoolConfig.setBlockWhenExhausted(false);
         jedisPoolConfig.setJmxEnabled(true);
 
-        //检查连接是否可用
+        // 检查连接是否可用
         jedisPoolConfig.setTestWhileIdle(true);
         jedisPoolConfig.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
         jedisPoolConfig.setTestOnBorrow(true);
@@ -102,19 +102,19 @@ public class RedisConfig extends CachingConfigurerSupport{
      * @return
      */
     @Bean
-    public JedisConnectionFactory getJedisConnectionFactory(){
+    public JedisConnectionFactory getJedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPassword(password);
         redisStandaloneConfiguration.setPort(port);
-        //获得默认的连接池构造器
+        // 获得默认的连接池构造器
         JedisClientConfiguration.JedisPoolingClientConfigurationBuilder jpcb =
                 (JedisClientConfiguration.JedisPoolingClientConfigurationBuilder)JedisClientConfiguration.builder();
-        //指定jedisPoolConifig来修改默认的连接池构造器
+        // 指定jedisPoolConifig来修改默认的连接池构造器
         jpcb.poolConfig(getJedisPoolConfig());
-        //通过构造器来构造jedis客户端配置
+        // 通过构造器来构造jedis客户端配置
         JedisClientConfiguration jedisClientConfiguration = jpcb.build();
-        //单机配置 + 客户端配置 = jedis连接工厂
+        // 单机配置 + 客户端配置 = jedis连接工厂
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
         return jedisConnectionFactory;
     }
@@ -127,12 +127,14 @@ public class RedisConfig extends CachingConfigurerSupport{
     @Override
     public KeyGenerator keyGenerator() {
         return (target,method,params)->{
-            //采取拼接的方式生成key
+            // 采取拼接的方式生成key
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(target.getClass().getName());//目标类的类名
+            // 目标类的类名
+            stringBuilder.append(target.getClass().getName());
             stringBuilder.append(":");
-            stringBuilder.append(method.getName());//目标方法名
-            //参数
+            // 目标方法名
+            stringBuilder.append(method.getName());
+            // 参数
             for(Object object : params){
                 stringBuilder.append(":"+String.valueOf(object));
             }
@@ -149,7 +151,7 @@ public class RedisConfig extends CachingConfigurerSupport{
      */
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        //设置序列化
+        // 设置序列化
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
@@ -158,9 +160,9 @@ public class RedisConfig extends CachingConfigurerSupport{
         // 配置redisTemplate
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(getJedisConnectionFactory());
-        //开启事务支持
+        // 开启事务支持
         redisTemplate.setEnableTransactionSupport(true);
-        //序列化策略
+        // 序列化策略
         RedisSerializer stringSerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(stringSerializer);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);

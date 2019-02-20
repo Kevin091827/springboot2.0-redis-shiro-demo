@@ -1,11 +1,11 @@
-package com.kevin.library.utils;
+package com.kevin.library.util;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 /**
  * 自定义UsernamePasswordToken
  */
-public class NewToken extends UsernamePasswordToken {
+public class NewTokenUtils extends UsernamePasswordToken {
 
     /**
      * 添加多一个登录类型的标识
@@ -20,7 +20,7 @@ public class NewToken extends UsernamePasswordToken {
         this.loginType = loginType;
     }
 
-    public NewToken(String username, String password, String loginType) {
+    public NewTokenUtils(String username, String password, String loginType) {
         super(username, password);
         this.loginType = loginType;
     }

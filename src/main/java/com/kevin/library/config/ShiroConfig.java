@@ -3,8 +3,8 @@ package com.kevin.library.config;
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.kevin.library.realm.StuLoginRealm;
 import com.kevin.library.realm.ManLoginRealm;
-import com.kevin.library.utils.CredentialsMatcher;
-import com.kevin.library.utils.NewAuthenticator;
+import com.kevin.library.util.CredentialsMatcherUtils;
+import com.kevin.library.util.NewAuthenticatorUtils;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.codec.Base64;
@@ -51,7 +51,7 @@ public class ShiroConfig {
      * 配置shiroDialect,用于thymeleaf和shiro标签使用
      */
     @Bean
-    public ShiroDialect getShiroDialect(){
+    public ShiroDialect getShiroDialect() {
         return new ShiroDialect();
     }
 
@@ -59,8 +59,8 @@ public class ShiroConfig {
      * 自定义密码加密器(认证凭证器)
      */
     @Bean(name = "CredentialsMatcher")
-    public CredentialsMatcher credentialsMatcher() {
-        return new CredentialsMatcher();
+    public CredentialsMatcherUtils credentialsMatcher() {
+        return new CredentialsMatcherUtils();
     }
 
     /**
@@ -68,22 +68,22 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public ModularRealmAuthenticator modularRealmAuthenticator(){
-        NewAuthenticator newAuthenticator = new NewAuthenticator();
-        //认证策略
-        newAuthenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
-        return newAuthenticator;
+    public ModularRealmAuthenticator modularRealmAuthenticator() {
+        NewAuthenticatorUtils newAuthenticatorUtils = new NewAuthenticatorUtils();
+        // 认证策略
+        newAuthenticatorUtils.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+        return newAuthenticatorUtils;
     }
 
     /**
      * 创建realm实体bean,交给spring容器
      */
     @Bean(name="loginRealm")
-    public StuLoginRealm getLoginRealm(@Qualifier("CredentialsMatcher") CredentialsMatcher credentialsMatcher){
+    public StuLoginRealm getLoginRealm(@Qualifier("CredentialsMatcher") CredentialsMatcherUtils credentialsMatcherUtils) {
         StuLoginRealm stuLoginRealm = new StuLoginRealm();
-        //配置认证凭证器
-        stuLoginRealm.setCredentialsMatcher(credentialsMatcher);
-        //开启认证和授权的缓存
+        // 配置认证凭证器
+        stuLoginRealm.setCredentialsMatcher(credentialsMatcherUtils);
+        // 开启认证和授权的缓存
         stuLoginRealm.setCachingEnabled(true);
         stuLoginRealm.setAuthenticationCachingEnabled(true);
         stuLoginRealm.setAuthorizationCachingEnabled(true);
@@ -92,11 +92,11 @@ public class ShiroConfig {
     }
 
     @Bean(name="manLoginRealm")
-    public ManLoginRealm getManLoginRealm(@Qualifier("CredentialsMatcher") CredentialsMatcher credentialsMatcher){
+    public ManLoginRealm getManLoginRealm(@Qualifier("CredentialsMatcher") CredentialsMatcherUtils credentialsMatcherUtils) {
         ManLoginRealm manLoginRealm = new ManLoginRealm();
-        //配置认证凭证器
-        manLoginRealm.setCredentialsMatcher(credentialsMatcher);
-        //开启认证和授权的缓存
+        // 配置认证凭证器
+        manLoginRealm.setCredentialsMatcher(credentialsMatcherUtils);
+        // 开启认证和授权的缓存
         manLoginRealm.setCachingEnabled(true);
         manLoginRealm.setAuthenticationCachingEnabled(true);
         manLoginRealm.setAuthorizationCachingEnabled(true);
@@ -109,8 +109,8 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public SimpleCookie rememberMeCookie(){
-        //对应前端 checkbox name
+    public SimpleCookie rememberMeCookie() {
+        // 对应前端 checkbox name
         SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
         simpleCookie.setMaxAge(259200);
         return simpleCookie;
@@ -121,11 +121,11 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public CookieRememberMeManager rememberMeManager(){
+    public CookieRememberMeManager rememberMeManager() {
 
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
         cookieRememberMeManager.setCookie(rememberMeCookie());
-        //rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度(128 256 512 位)
+        // rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度(128 256 512 位)
         cookieRememberMeManager.setCipherKey(Base64.decode("2AvVhdsgUs0FSA3SDFAdag=="));
         return cookieRememberMeManager;
     }
@@ -135,7 +135,7 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public RedisManager redisManager(){
+    public RedisManager redisManager() {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(host);
         redisManager.setPort(port);
@@ -150,7 +150,7 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public RedisCacheManager redisCacheManager(){
+    public RedisCacheManager redisCacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
         return redisCacheManager;
@@ -162,7 +162,7 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public JavaUuidSessionIdGenerator sessionIdGenerator(){
+    public JavaUuidSessionIdGenerator sessionIdGenerator() {
         return new JavaUuidSessionIdGenerator();
     }
 
@@ -171,20 +171,20 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public RedisSessionDAO sessionDAO(){
+    public RedisSessionDAO sessionDAO() {
         RedisSessionDAO sessionDAO = new RedisSessionDAO();
         sessionDAO.setRedisManager(redisManager());
-        //  Session ID 生成器
+        // Session ID 生成器
         sessionDAO.setSessionIdGenerator(sessionIdGenerator());
         return sessionDAO;
     }
 
     @Bean
-    public SimpleCookie cookie(){
-        //cookie的name,对应的默认是 JSESSIONID
+    public SimpleCookie cookie() {
+        // cookie的name,对应的默认是 JSESSIONID
         SimpleCookie cookie = new SimpleCookie("SHAREJSESSIONID");
         cookie.setHttpOnly(true);
-        //  path为 / 用于多个系统共享JSESSIONID
+        // path为 / 用于多个系统共享JSESSIONID
         cookie.setPath("/");
         // 浏览器关闭时失效此cookie
         cookie.setMaxAge(-1);
@@ -196,7 +196,7 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public DefaultWebSessionManager sessionManager(){
+    public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         // 设置session超时
         sessionManager.setGlobalSessionTimeout(1000*100);
@@ -217,20 +217,20 @@ public class ShiroConfig {
      * 创建securityManager 关联realm
      */
     @Bean(name="securityManager")
-    public DefaultWebSecurityManager getSecurityManager(@Qualifier("CredentialsMatcher") CredentialsMatcher credentialsMatcher){
+    public DefaultWebSecurityManager getSecurityManager(@Qualifier("CredentialsMatcher") CredentialsMatcherUtils credentialsMatcherUtils) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        //缓存管理器
+        // 缓存管理器
         securityManager.setCacheManager(redisCacheManager());
-        //配置自定义的modularRealmAuthenticator
+        // 配置自定义的modularRealmAuthenticator
         securityManager.setAuthenticator(modularRealmAuthenticator());
-        //配置realms
+        // 配置realms
         List<Realm> realms = new ArrayList<>();
         realms.add(getLoginRealm(credentialsMatcher()));
         realms.add(getManLoginRealm(credentialsMatcher()));
         securityManager.setRealms(realms);
-        //rememberMe管理器
+        // rememberMe管理器
         securityManager.setRememberMeManager(rememberMeManager());
-        //session管理器
+        // session管理器
         securityManager.setSessionManager(sessionManager());
         System.out.print("安全管理器已经加载");
         return securityManager;
@@ -240,7 +240,7 @@ public class ShiroConfig {
      * shiro AOP 支持
      */
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(getSecurityManager(credentialsMatcher()));
         return authorizationAttributeSourceAdvisor;
@@ -254,9 +254,9 @@ public class ShiroConfig {
     public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
         SimpleMappingExceptionResolver simpleMappingExceptionResolver = new SimpleMappingExceptionResolver();
         Properties mappings = new Properties();
-        //数据库异常处理
+        // 数据库异常处理
         mappings.setProperty("DatabaseException", "500");
-        //设置未授权页面
+        // 设置未授权页面
         mappings.setProperty("UnauthorizedException","unanthorized");
         simpleMappingExceptionResolver.setExceptionMappings(mappings);
         return simpleMappingExceptionResolver;
@@ -291,7 +291,7 @@ public class ShiroConfig {
         filterMap.put("/student/logout","logout");
         filterMap.put("/student/**","authc");
         filterMap.put("/manager/**","authc");
-        //设置登录url
+        // 设置登录url
         shiroFilterFactoryBean.setLoginUrl("/toIndex");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         System.out.print("shiro拦截器已经加载");

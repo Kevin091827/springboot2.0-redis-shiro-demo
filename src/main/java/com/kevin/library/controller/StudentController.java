@@ -2,13 +2,10 @@ package com.kevin.library.controller;
 
 import com.kevin.library.pojo.Student;
 import com.kevin.library.service.StudentService;
-import com.kevin.library.utils.CredentialsMatcher;
-import com.kevin.library.utils.NewToken;
+import com.kevin.library.util.CredentialsMatcherUtils;
+import com.kevin.library.util.NewTokenUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -55,7 +52,7 @@ public class StudentController {
 
         Subject subject = SecurityUtils.getSubject();
         if (!subject.isAuthenticated()) {
-            NewToken token = new NewToken(username, password,"Stu");
+            NewTokenUtils token = new NewTokenUtils(username, password,"Stu");
             try {
                 token.setRememberMe(true);
                 subject.login(token);
@@ -100,8 +97,8 @@ public class StudentController {
     @RequestMapping("/student/register")
     public String register(@RequestParam("username") String username,@RequestParam("password") String password,
                            @RequestParam("sex") String sex, @RequestParam("profession") String profession){
-        CredentialsMatcher credentialsMatcher = new CredentialsMatcher();
-        String md5_pwd = credentialsMatcher.md5(password,username);
+        CredentialsMatcherUtils credentialsMatcherUtils = new CredentialsMatcherUtils();
+        String md5_pwd = credentialsMatcherUtils.md5(password,username);
         Student student = new Student();
         student.setSex(sex);
         student.setPassword(md5_pwd);
@@ -162,7 +159,7 @@ public class StudentController {
         student.setId((int)SecurityUtils.getSubject().getPrincipal());
         if (pwd1!=""&&pwd2!="") {
             if (pwd2.equals(pwd1)) {
-                String pwd = new CredentialsMatcher().md5(pwd1,username);
+                String pwd = new CredentialsMatcherUtils().md5(pwd1,username);
                 student.setPassword(pwd);
                 studentService.updateInfo(student);
                 return "redirect:/student/personalInfomation";
