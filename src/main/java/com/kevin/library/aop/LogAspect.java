@@ -32,39 +32,39 @@ public class LogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         // 记录下请求内容
-        System.out.println("URL : " + request.getRequestURL().toString());
-        System.out.println("HTTP_METHOD : " + request.getMethod());
-        System.out.println("IP : " + request.getRemoteAddr());
-        System.out.println("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        System.out.println("ARGS : " + Arrays.toString(joinPoint.getArgs()));
+        logger.info("URL : " + request.getRequestURL().toString());
+        logger.info("HTTP_METHOD : " + request.getMethod());
+        logger.info("IP : " + request.getRemoteAddr());
+        logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+        logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
     }
 
     //后置通知
     @AfterReturning(returning = "ret", pointcut = "webLog()")
     public void afterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
-        System.out.println("方法的返回值 : " + ret);
+        logger.info("方法的返回值 : " + ret);
     }
 
     //后置异常通知
     @AfterThrowing("webLog()")
     public void returnThrowing(JoinPoint joinPoint) {
-        System.out.println("方法异常时执行");
+        logger.info("方法异常时执行");
     }
 
     //最终通知
     @After("webLog()")
     public void after(JoinPoint joinPoint) {
-        System.out.println("方法最终执行");
+        logger.info("方法最终执行");
     }
 
     //环绕通知
     @Around("webLog()")
     public Object arround(ProceedingJoinPoint pjp) {
-        System.out.println("方法环绕start.....");
+        logger.info("方法环绕start.....");
         try {
             Object o =  pjp.proceed();
-            System.out.println("方法环绕proceed，结果是 :" + o);
+            logger.info("方法环绕proceed，结果是 :" + o);
             return o;
         } catch (Throwable e) {
             e.printStackTrace();

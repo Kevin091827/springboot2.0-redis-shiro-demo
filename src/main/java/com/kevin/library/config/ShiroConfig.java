@@ -19,6 +19,8 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +48,8 @@ public class ShiroConfig {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 配置shiroDialect,用于thymeleaf和shiro标签使用
@@ -87,7 +91,7 @@ public class ShiroConfig {
         stuLoginRealm.setCachingEnabled(true);
         stuLoginRealm.setAuthenticationCachingEnabled(true);
         stuLoginRealm.setAuthorizationCachingEnabled(true);
-        System.out.print("realm已经加载");
+        logger.info("stuLoginRealm加载");
         return stuLoginRealm;
     }
 
@@ -100,7 +104,7 @@ public class ShiroConfig {
         manLoginRealm.setCachingEnabled(true);
         manLoginRealm.setAuthenticationCachingEnabled(true);
         manLoginRealm.setAuthorizationCachingEnabled(true);
-        System.out.print("Manrealm已经加载");
+        logger.info("manLoginRealm加载");
         return manLoginRealm;
     }
 
@@ -142,6 +146,7 @@ public class ShiroConfig {
         redisManager.setPassword(password);
         redisManager.setTimeout(timeout);
         redisManager.setExpire(1000*100);
+        logger.info("redisManager加载");
         return redisManager;
     }
 
@@ -153,6 +158,7 @@ public class ShiroConfig {
     public RedisCacheManager redisCacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
+        logger.info("redis缓存管理器加载");
         return redisCacheManager;
     }
 
@@ -209,6 +215,7 @@ public class ShiroConfig {
         // 设置sessionDAO
         sessionManager.setSessionDAO(sessionDAO());
         sessionManager.setSessionIdCookieEnabled(true);
+        logger.info("sessionManager加载");
         return sessionManager;
     }
 
@@ -232,7 +239,7 @@ public class ShiroConfig {
         securityManager.setRememberMeManager(rememberMeManager());
         // session管理器
         securityManager.setSessionManager(sessionManager());
-        System.out.print("安全管理器已经加载");
+        logger.info("安全管理器已经加载");
         return securityManager;
     }
 
@@ -294,7 +301,7 @@ public class ShiroConfig {
         // 设置登录url
         shiroFilterFactoryBean.setLoginUrl("/toIndex");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
-        System.out.print("shiro拦截器已经加载");
+        logger.info("shiro拦截器已经加载");
         return shiroFilterFactoryBean;
     }
 

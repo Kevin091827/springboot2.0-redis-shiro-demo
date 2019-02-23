@@ -39,7 +39,7 @@
 		select count(*) from student_info
 	</select>
     <!--根据id查找学生-->
-    <select id="selectStuById" parameterType="java.lang.Integer" resultMap="student">
+    <select id="getStuById" parameterType="java.lang.Integer" resultMap="student">
         select * from student_info where id = #{id}
     </select>
     <!--更新学生信息-->

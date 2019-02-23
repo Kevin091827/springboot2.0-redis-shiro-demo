@@ -33,6 +33,7 @@ public class ManagerController {
      */
     @RequestMapping("/manager/toLogin")
     public String toLogin() {
+        logger.info("跳转至管理员登录页面");
         return "login2";
     }
 
@@ -42,6 +43,7 @@ public class ManagerController {
      */
     @RequestMapping("/manager/toSuccessLogin")
     public String toSuccessLogin() {
+        logger.info("跳转至管理员登录成功页面");
         return "mainface";
     }
 
@@ -61,9 +63,10 @@ public class ManagerController {
                     token.setRememberMe(true);
                     subject.login(token);
                     subject.getSession().setAttribute("msg",token.getUsername());
+                    logger.info("管理员登录成功");
                     return "redirect:/manager/toSuccessLogin";
                 } catch (AuthenticationException e) {
-                    logger.info("失败原因：" + e.getMessage());
+                    logger.info("登录失败原因：" + e.getMessage());
                     return "login2";
                 }
             }
@@ -79,6 +82,7 @@ public class ManagerController {
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
+        logger.info("管理员退出登录");
         return "index";
     }
 
@@ -87,6 +91,7 @@ public class ManagerController {
      */
     @RequestMapping("/manager/toRegister")
     public String toRegister() {
+        logger.info("跳转至管理员注册页面");
         return "man_register";
     }
 
@@ -104,7 +109,13 @@ public class ManagerController {
         manager.setManagerName(managerName);
         manager.setPassword(md5_pwd);
         manager.setRole("man");
-        managerService.register(manager);
+        try {
+            managerService.register(manager);
+            logger.info("管理员"+manager.getManagerName()+"注册成功");
+        }catch (Exception ee) {
+            logger.info("注册失败原因："+ee);
+            return "/manager/toRegister";
+        }
         return "login2";
     }
 
@@ -123,6 +134,7 @@ public class ManagerController {
         PageInfo pageInfo = new PageInfo(studentList);
         model.addAttribute("studentList", studentList);
         model.addAttribute("pageInfo",pageInfo);
+        logger.info(SecurityUtils.getSubject().getPrincipal()+"分页查询所有学生信息");
         return "allStudentInfo";
     }
 
@@ -136,9 +148,14 @@ public class ManagerController {
     @RequestMapping("/manager/selectStuById")
     public String selectStuById(@RequestParam("id") int id, Model model) {
 
+        logger.info("根据id查询学生信息");
         Student student = managerService.selectStuById(id);
         if(student != null) {
+            logger.info("查询到该学生"+"id为"+student.getId());
             model.addAttribute("selectStu", student);
+        }else {
+            logger.info("没有查询到该学生");
+            model.addAttribute("selectStu",null);
         }
         return "selectStuById";
     }
@@ -150,8 +167,13 @@ public class ManagerController {
      */
     @RequiresRoles("man")
     @RequestMapping("/manager/updateStuInfo")
-    public String updateStuInfo(Student student) {
-        managerService.updateStuInfo(student);
+    public String updateStuInfo(Student student,Model model) {
+        try {
+            managerService.updateStuInfo(student);
+            logger.info("学生信息更新成功");
+        }catch (Exception ee){
+            logger.info("学生信息更新失败");
+        }
         return "redirect:/manager/allStudentInfo";
     }
 
@@ -163,7 +185,12 @@ public class ManagerController {
     @RequiresRoles("man")
     @RequestMapping("/manager/deleteStuInfo")
     public String deleteStuInfo(@RequestParam("id") int id) {
-        managerService.deleteStuInfo(id);
+        try {
+            managerService.deleteStuInfo(id);
+            logger.info("删除成功");
+        }catch (Exception ee){
+            logger.info("删除失败");
+        }
         return "redirect:/manager/allStudentInfo";
     }
 
@@ -173,6 +200,7 @@ public class ManagerController {
     @RequiresRoles("man")
     @RequestMapping("/manager/toInsertStudent")
     public String toInsertStudent() {
+        logger.info("跳转到添加页面");
         return "insertStudent";
     }
 
@@ -198,7 +226,13 @@ public class ManagerController {
         student.setId(id);
         student.setRole("stu");
         student.setSex(sex);
-        managerService.insertStudent(student);
+        try {
+            managerService.insertStudent(student);
+            logger.info("添加成功");
+        }catch (Exception ee){
+            logger.info("添加失败");
+            return "/manager/toInsertStudent";
+        }
         return "redirect:/manager/allStudentInfo";
     }
 
@@ -208,6 +242,7 @@ public class ManagerController {
     @RequiresRoles("man")
     @RequestMapping("/manager/toSelectStuInfo")
     public String toSelectStuInfo() {
+        logger.info("跳转到搜索页面");
         return "toSelectStuInfo";
     }
 
@@ -229,7 +264,13 @@ public class ManagerController {
             student.setProfession(profession);
         }
         List<Student> studentList = managerService.selectStuInfo(student);
-        model.addAttribute("studentList", studentList);
+        if(studentList != null){
+            logger.info("查询成功");
+            model.addAttribute("studentList", studentList);
+        }else {
+            logger.info("查询不到结果集");
+            model.addAttribute("studentList",studentList);
+        }
         return "selectResult";
     }
 
@@ -241,6 +282,7 @@ public class ManagerController {
     @RequiresRoles("man")
     @RequestMapping("/manager/toSelectManInfo")
     public String manPersonalInfo(Model model) {
+        logger.info("查看管理员个人信息");
         Subject subject = SecurityUtils.getSubject();
         int id = (int) subject.getPrincipal();
         Manager manager = managerService.selectManById(id);
@@ -256,6 +298,7 @@ public class ManagerController {
     @RequiresRoles("man")
     @RequestMapping("/manager/toUpdate")
     public String toUpdateManInfo(Model model) {
+        logger.info("跳转到管理员信息更新页面");
         model.addAttribute("manager", managerService.selectManById((int) SecurityUtils.getSubject().getPrincipal()));
         return "updateManPwd";
     }

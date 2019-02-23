@@ -201,7 +201,13 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public List<Student> selectStuInfo(Student student) {
-        return managerDao.selectStuInfo(student);
+
+        List<Student> studentList =  managerDao.selectStuInfo(student);
+        if(studentList.size() == 0){
+            return null;
+        }else {
+            return studentList;
+        }
     }
 
     /**

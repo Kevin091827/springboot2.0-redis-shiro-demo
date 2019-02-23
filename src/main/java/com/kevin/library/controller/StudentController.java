@@ -29,6 +29,7 @@ public class StudentController {
      */
     @RequestMapping("/student/toLogin")
     public String toLogin(){
+        logger.info("跳转至学生登录页面");
         return "login";
     }
 
@@ -38,6 +39,7 @@ public class StudentController {
      */
     @RequestMapping("/student/toSuccessLogin")
     public String toSuccessLogin(){
+        logger.info("跳转至学生登录成功页面");
         return "mainface";
     }
 
@@ -57,9 +59,10 @@ public class StudentController {
                 token.setRememberMe(true);
                 subject.login(token);
                 subject.getSession().setAttribute("msg",token.getUsername());
+                logger.info("学生登录成功");
                 return "redirect:/student/toSuccessLogin";
             } catch(AuthenticationException e){
-                logger.info("失败原因："+e.getMessage());
+                logger.info("登录失败原因："+e.getMessage());
                 return "login";
             }
         }
@@ -74,6 +77,7 @@ public class StudentController {
     public String logout(){
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
+        logger.info("学生退出登录");
         return "index";
     }
 
@@ -83,6 +87,7 @@ public class StudentController {
      */
     @RequestMapping("/student/toRegister")
     public String toRegister(){
+        logger.info("跳转至学生注册页面");
         return "stu_register";
     }
 
@@ -105,7 +110,13 @@ public class StudentController {
         student.setUsername(username);
         student.setRole("stu");
         student.setProfession(profession);
-        studentService.register(student);
+        try {
+            studentService.register(student);
+            logger.info("学生"+student.getUsername()+"注册成功");
+        }catch(Exception ee){
+            logger.info("学生注册失败原因："+ee);
+            return "/student/toRegister";
+        }
         return "login";
     }
 
@@ -117,6 +128,7 @@ public class StudentController {
     @RequiresRoles("stu")
     @RequestMapping("/student/personalInfomation")
     public String personalInfomation(Model model){
+        logger.info("查看学生个人信息");
         Subject subject = SecurityUtils.getSubject();
         int id =(int) subject.getPrincipal();
         Student student = studentService.personalInfo(id);
@@ -132,6 +144,7 @@ public class StudentController {
     @RequiresRoles("stu")
     @RequestMapping("/student/toUpdate")
     public String toUpdate(Model model){
+        logger.info("跳转到学生信息更新页面");
         Subject subject = SecurityUtils.getSubject();
         model.addAttribute("student",studentService.personalInfo((int)subject.getPrincipal()));
         return "updateStuPwd";

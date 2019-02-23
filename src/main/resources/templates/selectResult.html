@@ -143,6 +143,7 @@
     });
 </script>
 <body>
+<span th:if="${studentList} != null">
 <div class="container" style="margin-top: 30px; position:absolute;left: 250px;" >
     <table class="table table-hover table-bordered" style="margin-top: 30px;border:1px  black">
         <thead>
@@ -179,6 +180,13 @@
         </tbody>
     </table>
 </div>
+</span>
+<span th:if="${studentList} == null">
+        <script>
+            alert("没有找到该学生");
+        </script>
+</span>
+
 <!--包裹层-->
 <div class="navMenuBox">
     <ul class="navMenu">

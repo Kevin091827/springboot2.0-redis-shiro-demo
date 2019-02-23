@@ -94,6 +94,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         jedisPoolConfig.setTestOnBorrow(true);
         jedisPoolConfig.setTestOnReturn(true);
         jedisPoolConfig.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
+        logger.info("jedisPool配置完成");
         return jedisPoolConfig;
     }
 
@@ -116,6 +117,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         JedisClientConfiguration jedisClientConfiguration = jpcb.build();
         // 单机配置 + 客户端配置 = jedis连接工厂
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
+        logger.info("jedis连接工厂加载");
         return jedisConnectionFactory;
     }
 
@@ -169,6 +171,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         redisTemplate.setHashKeySerializer(stringSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();
+        logger.info("redisTemplate配置完成");
         return redisTemplate;
     }
 
@@ -218,6 +221,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         RedisCacheManager cacheManager = RedisCacheManager.builder(getJedisConnectionFactory())
                 .cacheDefaults(config)
                 .build();
+        logger.info("redis缓存管理器加载");
         return cacheManager;
 
     }
