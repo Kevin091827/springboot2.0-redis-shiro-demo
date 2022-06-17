@@ -122,7 +122,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
+            <version>1.2.83</version>
         </dependency>
         <!--spring boot 集成 Thymeleaf起步依赖-->
         <dependency>
@@ -155,7 +155,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.8</version>
+            <version>1.2.83</version>
         </dependency>
 
         <!--分页插件-->
